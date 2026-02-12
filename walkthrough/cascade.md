@@ -73,3 +73,66 @@ Additionally, you can add screenshots, directly pull elements from previews, and
 
 Find more information on Previews [Here](https://docs.windsurf.com/windsurf/previews).
 
+## Debugging with Cascade
+
+Cascade provides powerful debugging capabilities that help you identify and fix issues quickly. Here are the key ways to bring debugging context into Cascade.
+
+### Explain and Fix
+
+When you encounter errors in your code, you can use the "Explain and Fix" feature to get immediate help.
+
+> **Try this:**
+> 1. Open `contact-form-app/frontend/src/components/ContactForm.tsx`
+> 2. Introduce a syntax error (e.g., remove a closing bracket)
+> 3. Highlight the error squiggle in the editor
+> 4. Click "Explain and Fix" in the hover tooltip
+
+**What you'll see:** Cascade will analyze the error, explain what's wrong, and offer to fix it automatically.
+
+### Send Problems to Cascade
+
+The Problems panel at the bottom of the editor shows linting errors, type errors, and other issues. You can send these directly to Cascade.
+
+> **Try this:**
+> 1. Open the Problems panel
+> 2. If there are any problems listed, click the "Send to Cascade" button
+> 3. Ask Cascade to fix the issues
+
+**What you'll see:** The problems are added as context to your Cascade conversation, allowing Cascade to address them systematically.
+
+### Terminal Error Context
+
+When commands fail in the terminal, you can send the error output directly to Cascade.
+
+> **Try this:**
+> 1. Open the terminal and run a command that produces an error (e.g., `npm run build` with a syntax error in your code)
+> 2. Highlight the error output in the terminal
+> 3. Press `Cmd/Ctrl + L` to send it to Cascade
+> 4. Ask Cascade to diagnose and fix the issue
+
+**What you'll see:** Cascade will analyze the stack trace or error message and help you identify the root cause.
+
+### @-mention Terminal
+
+You can also reference your terminal directly in Cascade conversations.
+
+> **Try this:**
+> After running a command in the terminal, ask Cascade:
+> ```text
+> @terminal What went wrong with my last command and how do I fix it?
+> ```
+
+**What you'll see:** Cascade will read the terminal output and provide targeted debugging assistance.
+
+### Linter Integration
+
+Cascade automatically detects and can fix linting errors in code it generates. This is enabled by default.
+
+> **Try this:**
+> Ask Cascade to generate code that might have linting issues:
+> ```text
+> Add a new function to ContactForm.tsx that validates phone numbers
+> ```
+
+**What you'll see:** If the generated code has linting issues, Cascade will automatically detect and fix them. You'll see an "Auto-fix" indicator on the tool call.
+

@@ -44,6 +44,32 @@ In this walkthrough, you’ll see how Tab can help you:
 ## Additional Walkthroughs
 Once you've explored the core Windsurf modalities, you can look at [Common Use Cases](./common-use-cases.md), which provide some suggested flows based on the scope of your task at hand.
 
-Alternatively, [Challenges](./challenges/README.md) provide some open-ended tasks for you to continue exploring Windsurf.
+### 4. [Memories, Rules, and AGENTS.md](./memories-and-rules.md)
+
+Learn how to customize Cascade's behavior and persist context across conversations.
+#### Key Takeaways:
+- Create and manage memories for persistent context
+- Define rules at global and workspace levels
+- Use AGENTS.md for directory-scoped instructions
+
+### 5. [Exploration Tools: DeepWiki and Codemaps](./exploration-tools.md)
+
+Discover powerful tools for understanding and visualizing your codebase.
+#### Key Takeaways:
+- Leverage DeepWiki for AI-powered documentation and architecture insights
+- Create Codemaps to visualize code execution flow and component relationships
+
+### 6. [Advanced Cascade Features](./advanced-cascade.md)
+
+Master advanced capabilities for power users.
+#### Key Takeaways:
+- Create Skills for complex, multi-step workflows
+- Configure MCP servers to extend Cascade with custom tools
+- Use Worktrees for isolated parallel development
+- Run Simultaneous Cascades for increased productivity
+
+## Challenges and Resources
+
+[Challenges](./challenges/README.md) provide open-ended tasks for you to continue exploring Windsurf.
 
 We also have provided a [for Administrators](./for-administrators) document to point you to references for key administrative features.
