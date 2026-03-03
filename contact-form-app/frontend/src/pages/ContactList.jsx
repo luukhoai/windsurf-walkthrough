@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const ContactList = () => {
   const [contacts, setContacts] = useState([]);
@@ -11,16 +11,16 @@ const ContactList = () => {
 
   const fetchContacts = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/contacts');
+      const response = await fetch("http://127.0.0.1:5000/api/contacts");
       if (!response.ok) {
-        throw new Error('Failed to fetch contacts');
+        throw new Error("Failed to fetch contacts");
       }
       const data = await response.json();
       setContacts(data);
       setError(null);
     } catch (err) {
-      setError('Error loading contacts. Please try again later.');
-      console.error('Error fetching contacts:', err);
+      setError("Error loading contacts. Please try again later.");
+      console.error("Error fetching contacts:", err);
     } finally {
       setLoading(false);
     }

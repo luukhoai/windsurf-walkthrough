@@ -1,82 +1,46 @@
-import React, { useState } from 'react';
-
-// String utility functions - needing to be moved to utils file
-// Validates email using regex pattern
-// This regex checks for:
-// - One or more characters before @ symbol
-// - @ symbol
-// - One or more characters for domain
-// - Dot followed by 2-4 characters for TLD
-const isEmailValid = (email: string): boolean => {
-  const re = new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$');
-  return re.test(email);
-};
-
-// Sanitizes input by doing a bunch of stuff
-const sanitizeInputString = (inputString: string): string => {
-  // Remove extra whitespace
-  const noExtraWhitespace = inputString.replace(/\s+/g, ' ');
-  // Trim
-  const trimmed = noExtraWhitespace.trim();
-  // Remove special characters
-  const noSpecialCharacters = trimmed.replace(/[^\w\s]/gi, '');
-  return noSpecialCharacters;
-};
-
-const isStringLengthValid = (str: string, min: number, max: number): boolean => {
-  const length = str.trim().length;
-  if (length < min) {
-    return false;
-  }
-  if (length > max) {
-    return false;
-  }
-  return true;
-};
-
-
-interface ContactFormData {
-  name: string;
-  email: string;
-  message: string;
-
-}
-
-interface FormErrors {
-  name?: string;
-  email?: string;
-  message?: string;
-}
+import React, { useState } from "react";
+import { ContactFormData, FormErrors } from "../types/form";
+import {
+  validateName,
+  validateEmail,
+  validateMessage,
+  sanitizeInputString,
+} from "../utils/validation";
+import { submitContactForm } from "../utils/api";
 
 const ContactForm: React.FC = () => {
   const [formData, setFormData] = useState<ContactFormData>({
-    name: '',
-    email: '',
-    message: '',
+    name: "",
+    email: "",
+    message: "",
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
+  const [submitMessage, setSubmitMessage] = useState<string>("");
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
-    if (!formData.name.trim()) {
-      // Windsurf will suggest validation logic
-    }
-    
-    // Validate name (2-50 characters)
-    const sanitizedName = sanitizeInputString(formData.name);
-    if (!isStringLengthValid(sanitizedName, 2, 50)) {
-      newErrors.name = 'Name must be between 2 and 50 characters';
+
+    // Validate name
+    const nameValidation = validateName(formData.name);
+    if (!nameValidation.isValid) {
+      newErrors.name = nameValidation.error;
     }
 
     // Validate email
-    if (!isEmailValid(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+    const emailValidation = validateEmail(formData.email);
+    if (!emailValidation.isValid) {
+      newErrors.email = emailValidation.error;
     }
 
-    // Validate message (10-500 characters)
-    if (!isStringLengthValid(formData.message, 10, 500)) {
-      newErrors.message = 'Message must be between 10 and 500 characters';
+    // Validate message
+    const messageValidation = validateMessage(formData.message);
+    if (!messageValidation.isValid) {
+      newErrors.message = messageValidation.error;
     }
 
     setErrors(newErrors);
@@ -85,84 +49,165 @@ const ContactForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
+
+    setIsSubmitting(true);
+    setSubmitStatus("idle");
+    setSubmitMessage("");
 
     const sanitizedData = {
       name: sanitizeInputString(formData.name),
       email: formData.email.trim(),
       message: formData.message.trim(),
     };
-    
+
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/contacts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(sanitizedData),
-      });
-      
-      if (response.ok) {
-        setFormData({ name: '', email: '', message: '' });
+      const result = await submitContactForm(sanitizedData);
+
+      if (result.success) {
+        setFormData({ name: "", email: "", message: "" });
         setErrors({});
+        setSubmitStatus("success");
+        setSubmitMessage("Form submitted successfully!");
+      } else {
+        setSubmitStatus("error");
+        setSubmitMessage(
+          result.error || "Failed to submit form. Please try again.",
+        );
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
-      setErrors({ message: 'Failed to submit form. Please try again.' });
+      setSubmitStatus("error");
+      setSubmitMessage("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    validateForm(); // Validate on each change
+    // Clear error for this field when user starts typing
+    if (errors[name as keyof FormErrors]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="contact-form">
-      <div>
-        <label htmlFor="name">Name:</label>
+    <form onSubmit={handleSubmit} className="contact-form" noValidate>
+      <div className="form-group">
+        <label htmlFor="name" className="form-label">
+          Name{" "}
+          <span className="required" aria-label="required">
+            *
+          </span>
+        </label>
         <input
           type="text"
           id="name"
           name="name"
           value={formData.name}
           onChange={handleChange}
+          className={`form-input ${errors.name ? "error" : ""}`}
+          aria-required="true"
+          aria-describedby={errors.name ? "name-error" : undefined}
+          disabled={isSubmitting}
+          placeholder="Enter your name"
         />
-        {errors.name && <div className="error-message">{errors.name}</div>}
+        {errors.name && (
+          <div id="name-error" className="error-message" role="alert">
+            {errors.name}
+          </div>
+        )}
       </div>
-      <div>
-        <label htmlFor="email">Email:</label>
+
+      <div className="form-group">
+        <label htmlFor="email" className="form-label">
+          Email{" "}
+          <span className="required" aria-label="required">
+            *
+          </span>
+        </label>
         <input
           type="email"
           id="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
+          className={`form-input ${errors.email ? "error" : ""}`}
+          aria-required="true"
+          aria-describedby={errors.email ? "email-error" : undefined}
+          disabled={isSubmitting}
+          placeholder="Enter your email address"
         />
-        {errors.email && <div className="error-message">{errors.email}</div>}
+        {errors.email && (
+          <div id="email-error" className="error-message" role="alert">
+            {errors.email}
+          </div>
+        )}
       </div>
-      <div>
-        <label htmlFor="message">Message:</label>
+
+      <div className="form-group">
+        <label htmlFor="message" className="form-label">
+          Message{" "}
+          <span className="required" aria-label="required">
+            *
+          </span>
+        </label>
         <textarea
           id="message"
           name="message"
           value={formData.message}
           onChange={handleChange}
+          className={`form-textarea ${errors.message ? "error" : ""}`}
+          aria-required="true"
+          aria-describedby={errors.message ? "message-error" : undefined}
+          disabled={isSubmitting}
+          placeholder="Enter your message (10-500 characters)"
+          rows={5}
         />
-        {errors.message && <div className="error-message">{errors.message}</div>}
+        {errors.message && (
+          <div id="message-error" className="error-message" role="alert">
+            {errors.message}
+          </div>
+        )}
       </div>
-      <button 
-        type="submit" 
-        disabled={Object.keys(errors).length > 0 || !formData.name || !formData.email || !formData.message}
+
+      {submitStatus === "success" && (
+        <div className="success-message" role="status">
+          {submitMessage}
+        </div>
+      )}
+
+      {submitStatus === "error" && (
+        <div className="error-message" role="alert">
+          {submitMessage}
+        </div>
+      )}
+
+      <button
+        type="submit"
+        className="submit-button"
+        disabled={
+          isSubmitting ||
+          Object.keys(errors).length > 0 ||
+          !formData.name ||
+          !formData.email ||
+          !formData.message
+        }
+        aria-busy={isSubmitting}
       >
-        Submit
+        {isSubmitting ? "Submitting..." : "Submit"}
       </button>
     </form>
   );

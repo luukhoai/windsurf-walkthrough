@@ -14,3 +14,93 @@ export const isEmailValid = (email: string): boolean => {
   const emailRegex = /^[\w.-]+@[\w.-]+\.[A-Za-z]{2,}$/;
   return emailRegex.test(email);
 };
+
+/**
+ * Sanitizes input string by removing extra whitespace and special characters.
+ */
+export const sanitizeInputString = (inputString: string): string => {
+  // Remove extra whitespace
+  const noExtraWhitespace = inputString.replace(/\s+/g, " ");
+  // Trim
+  const trimmed = noExtraWhitespace.trim();
+  // Remove special characters (keep letters, numbers, spaces, and basic punctuation)
+  const noSpecialCharacters = trimmed.replace(/[^\w\s.,!?'-]/gi, "");
+  return noSpecialCharacters;
+};
+
+/**
+ * Validates string length within min and max bounds.
+ */
+export const isStringLengthValid = (
+  str: string,
+  min: number,
+  max: number,
+): boolean => {
+  const length = str.trim().length;
+  return length >= min && length <= max;
+};
+
+/**
+ * Validates name field (2-50 characters, letters, spaces, hyphens, apostrophes).
+ */
+export const validateName = (
+  name: string,
+): { isValid: boolean; error?: string } => {
+  if (!name.trim()) {
+    return { isValid: false, error: "Name is required" };
+  }
+
+  if (!isStringLengthValid(name, 2, 50)) {
+    return {
+      isValid: false,
+      error: "Name must be between 2 and 50 characters",
+    };
+  }
+
+  const nameRegex = /^[a-zA-Z\s'-]+$/;
+  if (!nameRegex.test(name.trim())) {
+    return {
+      isValid: false,
+      error: "Name can only contain letters, spaces, hyphens, and apostrophes",
+    };
+  }
+
+  return { isValid: true };
+};
+
+/**
+ * Validates email field.
+ */
+export const validateEmail = (
+  email: string,
+): { isValid: boolean; error?: string } => {
+  if (!email.trim()) {
+    return { isValid: false, error: "Email is required" };
+  }
+
+  if (!isEmailValid(email.trim())) {
+    return { isValid: false, error: "Please enter a valid email address" };
+  }
+
+  return { isValid: true };
+};
+
+/**
+ * Validates message field (10-500 characters).
+ */
+export const validateMessage = (
+  message: string,
+): { isValid: boolean; error?: string } => {
+  if (!message.trim()) {
+    return { isValid: false, error: "Message is required" };
+  }
+
+  if (!isStringLengthValid(message, 10, 500)) {
+    return {
+      isValid: false,
+      error: "Message must be between 10 and 500 characters",
+    };
+  }
+
+  return { isValid: true };
+};

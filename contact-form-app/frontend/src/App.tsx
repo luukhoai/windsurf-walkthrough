@@ -1,7 +1,7 @@
-import React from 'react';
-import './App.css';
-import ContactForm from './components/ContactForm';
-import ContactList from './pages/ContactList';
+import React from "react";
+import "./App.css";
+import ContactForm from "./components/ContactForm";
+import ContactList from "./pages/ContactList";
 
 function App() {
   return (
