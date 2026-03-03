@@ -4,7 +4,9 @@ import {
   validateName,
   validateEmail,
   validateMessage,
+  validateAttachment,
   sanitizeInputString,
+  formatFileSize,
 } from "../utils/validation";
 import { submitContactForm } from "../utils/api";
 
@@ -13,6 +15,7 @@ const ContactForm: React.FC = () => {
     name: "",
     email: "",
     message: "",
+    attachment: undefined,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -43,6 +46,14 @@ const ContactForm: React.FC = () => {
       newErrors.message = messageValidation.error;
     }
 
+    // Validate attachment
+    const attachmentValidation = validateAttachment(
+      formData.attachment || null,
+    );
+    if (!attachmentValidation.isValid) {
+      newErrors.attachment = attachmentValidation.error;
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -62,6 +73,7 @@ const ContactForm: React.FC = () => {
       name: sanitizeInputString(formData.name),
       email: formData.email.trim(),
       message: formData.message.trim(),
+      attachment: formData.attachment,
     };
 
     try {
@@ -99,6 +111,22 @@ const ContactForm: React.FC = () => {
       setErrors((prev) => ({
         ...prev,
         [name]: undefined,
+      }));
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setFormData((prev) => ({
+      ...prev,
+      attachment: file || undefined,
+    }));
+
+    // Clear attachment error when file is selected
+    if (file && errors.attachment) {
+      setErrors((prev) => ({
+        ...prev,
+        attachment: undefined,
       }));
     }
   };
@@ -181,6 +209,36 @@ const ContactForm: React.FC = () => {
             {errors.message}
           </div>
         )}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="attachment" className="form-label">
+          Attachment (Optional)
+        </label>
+        <input
+          type="file"
+          id="attachment"
+          name="attachment"
+          onChange={handleFileChange}
+          className={`form-input ${errors.attachment ? "error" : ""}`}
+          aria-describedby={errors.attachment ? "attachment-error" : undefined}
+          disabled={isSubmitting}
+          accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+        />
+        {formData.attachment && (
+          <div className="file-info">
+            Selected: {formData.attachment.name} (
+            {formatFileSize(formData.attachment.size)})
+          </div>
+        )}
+        {errors.attachment && (
+          <div id="attachment-error" className="error-message" role="alert">
+            {errors.attachment}
+          </div>
+        )}
+        <div className="file-help">
+          Allowed types: PDF, DOC, DOCX, TXT, JPG, JPEG, PNG (Max: 5MB)
+        </div>
       </div>
 
       {submitStatus === "success" && (

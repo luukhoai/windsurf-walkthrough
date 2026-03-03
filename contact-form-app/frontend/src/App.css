@@ -189,6 +189,23 @@
   font-size: 1.1rem;
 }
 
+.file-info {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: #e8f5e8;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: #155724;
+}
+
+.file-help {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
 @media (max-width: 768px) {
   .contact-form {
     margin: 1rem;

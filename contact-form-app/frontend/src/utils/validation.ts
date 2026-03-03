@@ -104,3 +104,50 @@ export const validateMessage = (
 
   return { isValid: true };
 };
+
+/**
+ * Validates attachment file (optional field).
+ */
+export const validateAttachment = (
+  file: File | null,
+): { isValid: boolean; error?: string } => {
+  if (!file) {
+    return { isValid: true }; // Attachment is optional
+  }
+
+  // Check file size (5MB limit)
+  const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+  if (file.size > maxSize) {
+    return {
+      isValid: false,
+      error: "File size too large. Maximum size is 5MB",
+    };
+  }
+
+  // Check file extension
+  const allowedExtensions = ["pdf", "doc", "docx", "txt", "jpg", "jpeg", "png"];
+  const fileExtension = file.name.split(".").pop()?.toLowerCase();
+
+  if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
+    return {
+      isValid: false,
+      error:
+        "File type not allowed. Allowed types: pdf, doc, docx, txt, jpg, jpeg, png",
+    };
+  }
+
+  return { isValid: true };
+};
+
+/**
+ * Formats file size for display.
+ */
+export const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return "0 Bytes";
+
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+};
