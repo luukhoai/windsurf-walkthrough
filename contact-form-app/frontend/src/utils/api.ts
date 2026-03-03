@@ -59,3 +59,65 @@ export const submitContactForm = async (
     };
   }
 };
+
+/**
+ * Fetches all contacts from the backend API.
+ */
+export const fetchContacts = async (): Promise<ApiResponse> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/contacts`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const contacts = await response.json();
+    return { success: true, data: contacts };
+  } catch (error) {
+    console.error("Error fetching contacts:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to fetch contacts",
+    };
+  }
+};
+
+/**
+ * Searches contacts using the backend search API.
+ */
+export const searchContacts = async (
+  query: string,
+  field: string = 'all',
+  sortField: string = 'created_at',
+  sortOrder: string = 'desc'
+): Promise<ApiResponse> => {
+  try {
+    if (!query.trim()) {
+      // If empty query, fetch all contacts
+      return fetchContacts();
+    }
+
+    const params = new URLSearchParams({
+      q: query,
+      field: field,
+      sort: sortField,
+      order: sortOrder
+    });
+
+    const response = await fetch(`${API_BASE_URL}/api/contacts/search?${params}`);
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+    }
+    
+    const result = await response.json();
+    return { success: true, data: result.data };
+  } catch (error) {
+    console.error("Error searching contacts:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to search contacts",
+    };
+  }
+};

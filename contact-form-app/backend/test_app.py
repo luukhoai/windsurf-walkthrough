@@ -13,6 +13,8 @@ def client():
         app.contacts = []
         with app.test_client() as client:
             yield client
+        # Clear contacts after each test
+        app.contacts = []
 
 
 def test_submit_contact_success(client):
@@ -111,3 +113,172 @@ def test_get_contacts(client):
     # Check that our test contact is in the list
     contact_names = [contact['name'] for contact in data]
     assert 'Test User' in contact_names
+
+
+def test_search_contacts_success(client):
+    """Test GET /api/contacts/search with valid query."""
+    # Clear contacts first
+    app.contacts = []
+
+    # First add some test contacts
+    client.post('/api/contacts', json={
+        'name': 'John Doe',
+        'email': 'john@example.com',
+        'message': 'Test message from John'
+    })
+    client.post('/api/contacts', json={
+        'name': 'Jane Smith',
+        'email': 'jane@example.com',
+        'message': 'Hello from Jane'
+    })
+
+    # Search for 'John'
+    response = client.get('/api/contacts/search?q=John')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['success'] is True
+    assert len(data['data']) == 1
+    assert data['data'][0]['name'] == 'John Doe'
+    assert data['query'] == 'john'
+    assert data['total'] == 1
+
+
+def test_search_contacts_empty_query(client):
+    """Test GET /api/contacts/search with empty query."""
+    response = client.get('/api/contacts/search?q=')
+    assert response.status_code == 400
+    data = response.get_json()
+    assert data['success'] is False
+    assert 'required' in data['error'].lower()
+
+
+def test_search_contacts_no_results(client):
+    """Test GET /api/contacts/search with no matching results."""
+    response = client.get('/api/contacts/search?q=Nonexistent')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['success'] is True
+    assert len(data['data']) == 0
+    assert data['total'] == 0
+
+
+def test_search_contacts_invalid_field(client):
+    """Test GET /api/contacts/search with invalid field parameter."""
+    response = client.get('/api/contacts/search?q=test&field=invalid')
+    assert response.status_code == 400
+    data = response.get_json()
+    assert data['success'] is False
+    assert 'invalid field' in data['error'].lower()
+
+
+def test_search_contacts_invalid_sort_field(client):
+    """Test GET /api/contacts/search with invalid sort field."""
+    response = client.get('/api/contacts/search?q=test&sort=invalid')
+    assert response.status_code == 400
+    data = response.get_json()
+    assert data['success'] is False
+    assert 'invalid sort field' in data['error'].lower()
+
+
+def test_search_contacts_invalid_order(client):
+    """Test GET /api/contacts/search with invalid order."""
+    response = client.get('/api/contacts/search?q=test&order=invalid')
+    assert response.status_code == 400
+    data = response.get_json()
+    assert data['success'] is False
+    assert 'invalid order' in data['error'].lower()
+
+
+def test_search_contacts_specific_field(client):
+    """Test GET /api/contacts/search searching in specific field."""
+    # Clear contacts first
+    app.contacts = []
+
+    # Add test contacts
+    client.post('/api/contacts', json={
+        'name': 'John Doe',
+        'email': 'john@example.com',
+        'message': 'Test message'
+    })
+    client.post('/api/contacts', json={
+        'name': 'Jane Doe',
+        'email': 'jane@example.com',
+        'message': 'Different message'
+    })
+
+    # Search only in name field for 'Doe'
+    response = client.get('/api/contacts/search?q=Doe&field=name')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['success'] is True
+    assert len(data['data']) == 2  # Both John Doe and Jane Doe
+    assert data['field'] == 'name'
+
+
+def test_search_contacts_sorting(client):
+    """Test GET /api/contacts/search with sorting parameters."""
+    # Clear contacts first
+    app.contacts = []
+
+    # Add test contacts
+    client.post('/api/contacts', json={
+        'name': 'Alice Smith',
+        'email': 'alice@example.com',
+        'message': 'Message from Alice'
+    })
+    client.post('/api/contacts', json={
+        'name': 'Bob Smith',
+        'email': 'bob@example.com',
+        'message': 'Message from Bob'
+    })
+
+    # Search and sort by name ascending
+    response = client.get('/api/contacts/search?q=Smith&sort=name&order=asc')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['success'] is True
+    assert len(data['data']) == 2
+    assert data['data'][0]['name'] == 'Alice Smith'  # First alphabetically
+    assert data['sort'] == 'name'
+    assert data['order'] == 'asc'
+
+
+def test_search_contacts_case_insensitive(client):
+    """Test that search is case insensitive."""
+    # Clear contacts first
+    app.contacts = []
+
+    client.post('/api/contacts', json={
+        'name': 'John Doe',
+        'email': 'john@example.com',
+        'message': 'Test message'
+    })
+
+    # Search with different cases
+    response1 = client.get('/api/contacts/search?q=john')
+    response2 = client.get('/api/contacts/search?q=JOHN')
+    response3 = client.get('/api/contacts/search?q=John')
+
+    for response in [response1, response2, response3]:
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data['success'] is True
+        assert len(data['data']) == 1
+        assert data['data'][0]['name'] == 'John Doe'
+
+
+def test_search_contacts_special_characters(client):
+    """Test search with special characters."""
+    client.post('/api/contacts', json={
+        'name': 'John Doe',
+        'email': 'john@example.com',
+        'message': 'Message with special chars: !@#$%'
+    })
+
+    # Search for special characters
+    response = client.get('/api/contacts/search?q=!@#$%')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['success'] is True
+    assert len(data['data']) == 1
+    assert data['data'][0]['message'] == 'Message with special chars: !@#$%'
