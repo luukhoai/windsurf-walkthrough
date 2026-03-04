@@ -1,286 +1,111 @@
 ---
 name: Frontend Code-Review-Test Pipeline
-description: Professional CI-style pipeline for frontend: analyze → code → lint → scan → review → test
+description: Professional CI-style pipeline for frontend: analyze → implement → review → test
 ---
 
 # Frontend Code-Review-Test Pipeline
 
-A professional workflow combining analysis, code implementation, linting, security scan, review, and testing for frontend development.
+## Concept
 
-## Pipeline Overview
+- **Rules** → Standards (`.windsurf/rules/`)
+- **Skills** → Implementation + Lint + Security Scan
 
-```
-┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐
-│ ANALYZE │─▶│  CODE   │─▶│  LINT   │─▶│  SCAN   │─▶│ REVIEW  │─▶│  TEST   │
-│  Plan   │  │Implement│  │  Style  │  │Security │  │Quality │  │  Verify │
-└─────────┘  └─────────┘  └─────────┘  └─────────┘  └─────────┘  └─────────┘
-                 ▲              ▲              ▲              ▲              ▲
-                 │              │              │              │              │
-                 └──────────────┴──────────────┴──────────────┴──────────────┘
-                        (if fail → go back to previous stage to fix)
-```
-
-## Gate Logic
-
-Each stage is a **gate**:
-- **PASS** → proceed to the next stage
-- **FAIL** → go back to the previous stage to fix, then run from that stage again
+## Pipeline
 
 ```
-Stage n FAIL → Fix at Stage n-1 → Run from Stage n-1
+┌──────────┐  ┌───────────┐  ┌──────────┐  ┌─────────┐
+│ ANALYZE │─▶│ IMPLEMENT │─▶│  REVIEW  │─▶│   TEST  │
+│  Plan   │  │Code+Lint+Scan│ │ Quality  │  │ Verify │
+└──────────┘  └───────────┘  └──────────┘  └─────────┘
 ```
+
+## Prerequisites
+
+See `.windsurf/rules/frontend-development.md`
 
 ---
 
 ## Stage 1: Analyze & Plan
 
-### Using frontend-analysis-plan skill
-1. Understand requirements fully
-2. Explore existing code
-3. Design solution
-4. Document implementation plan
+**Skill:** `frontend-analysis-plan`
 
-### Analysis Checklist
-- [ ] Requirements fully understood
-- [ ] Existing code explored
-- [ ] Solution designed
-- [ ] Edge cases identified
-- [ ] Implementation plan documented
-
-### Gate Criteria
-- [ ] Requirements are clear and unambiguous
-- [ ] Implementation plan is written
-
-### If FAIL → Exit pipeline (cannot code without understanding requirements)
+### Gate: Plan written
 
 ---
 
-## Stage 2: Code Implementation
+## Stage 2: Implement
 
-### Using frontend-code skill
-1. Implement feature/fix in React components
-2. Follow coding standards from frontend-code skill
-3. Add proper TypeScript types
-4. Handle edge cases
+**Skill:** `frontend-code`
 
-### Implementation Checklist
-- [ ] Feature implemented according to requirements
-- [ ] Code follows project conventions
-- [ ] TypeScript types defined
-- [ ] State management implemented
-- [ ] Error handling in place
+Includes: Code + Lint + Security Scan
 
-### Gate Criteria
-- [ ] Code compiles (no TypeScript errors)
-- [ ] Components render without errors
-
-### If FAIL → Fix code → Rerun Stage 2
-
----
-
-## Stage 3: Lint
-
-### Using frontend-lint skill
-1. Run ESLint on modified files
-2. Fix all linting errors
-3. Run Prettier formatter (optional)
-4. Fix all warnings (optional)
-
-### Lint Commands
+### Commands
 ```bash
 cd contact-form-app/frontend
+
+# Run app
+npm start
+
+# Run lint
 npm run lint
-```
 
-### Lint Checklist
-- [ ] ESLint passes with no errors
-- [ ] No TypeScript errors
-- [ ] Code formatting applied
-- [ ] No `any` types used
-
-### Gate Criteria
-- [ ] `npm run lint` passes with no errors
-
-### If FAIL → Fix code (Stage 2) → Rerun Stage 3
-
----
-
-## Stage 4: Security Scan
-
-### Using frontend-security-scan skill
-1. Run Snyk code scan
-2. Run npm audit
-3. Check for vulnerabilities
-4. Fix any security issues found
-
-### Scan Commands
-```bash
-cd contact-form-app/frontend
-
-# Run Snyk Code Scan
+# Run security scan
 snyk code test --severity-threshold=medium
-
-# Run npm audit
 npm audit
 ```
 
-### Security Checklist
-- [ ] No XSS vulnerabilities
-- [ ] No sensitive data in code
-- [ ] Input validation in place
-- [ ] No known vulnerabilities in dependencies
-
-### Gate Criteria
-- [ ] No critical/high security issues
-
-### If FAIL → Fix code (Stage 2) → Rerun Stage 3 → Rerun Stage 4
+### Gate: Code + Lint + Security pass
 
 ---
 
-## Stage 5: Code Review
+## Stage 3: Review
 
-### Using frontend-review skill
-1. Run code-review for the changes
-2. Check React patterns
-3. Verify accessibility
-4. Ensure code quality
+**Skill:** `frontend-review`
 
-### Review Focus Areas
-- **React Patterns**: Hooks usage, component structure
-- **TypeScript**: Proper typing, no `any`
-- **Accessibility**: ARIA labels, keyboard navigation
-- **Code Quality**: Readability, naming, duplication
-
-### Review Checklist
-- [ ] Code reviewed
-- [ ] React best practices followed
-- [ ] Code quality meets standards
-- [ ] Accessibility considered
-
-### Gate Criteria
-- [ ] Code review passed (no critical issues)
-
-### If FAIL → Fix code (Stage 2) → Rerun Stage 3 → Rerun Stage 4 → Rerun Stage 5
+### Gate: Code reviewed
 
 ---
 
-## Stage 6: Testing
+## Stage 4: Test
 
-### Using frontend-test skill
-1. Run existing tests first (no regression)
-2. Write tests for new code
-3. Cover edge cases
-4. Verify all tests pass
+**Skill:** `frontend-test`
 
-### Test Commands
+### Command
 ```bash
-cd contact-form-app/frontend
-
-# Run all tests
 npm test -- --watchAll=false
-
-# Run with coverage
-npm test -- --coverage --watchAll=false
 ```
 
-### Test Checklist
-- [ ] Existing tests pass (no regression)
-- [ ] New feature tests added
-- [ ] Edge cases covered
-- [ ] Error cases tested
-
-### Gate Criteria
-- [ ] All tests pass
-
-### If FAIL → Fix code (Stage 2) → Rerun Stage 3 → Rerun Stage 4 → Rerun Stage 5 → Rerun Stage 6
+### Gate: All tests pass
 
 ---
 
-## Pipeline Flow with Retry Logic
+## Usage & Reference
 
-```
-START
-  │
-  ▼
-┌──────────────┐
-│  Stage 1     │──── FAIL ────▶ EXIT (Requirements unclear)
-│  ANALYZE     │──── PASS ────▶
-└──────────────┘
-  │
-  ▼
-┌──────────────┐
-│  Stage 2     │──── FAIL ────▶ FIX → Stage 2
-│  CODE        │──── PASS ────▶
-└──────────────┘
-  │
-  ▼
-┌──────────────┐
-│  Stage 3     │──── FAIL ────▶ FIX → Stage 2 → Stage 3
-│  LINT        │──── PASS ────▶
-└──────────────┘
-  │
-  ▼
-┌──────────────┐
-│  Stage 4     │──── FAIL ────▶ FIX → Stage 2 → Stage 3 → Stage 4
-│  SCAN        │──── PASS ────▶
-└──────────────┘
-  │
-  ▼
-┌──────────────┐
-│  Stage 5     │──── FAIL ────▶ FIX → Stage 2 → Stage 3 → Stage 4 → Stage 5
-│  REVIEW      │──── PASS ────▶
-└──────────────┘
-  │
-  ▼
-┌──────────────┐
-│  Stage 6     │──── FAIL ────▶ FIX → Stage 2 → Stage 3 → Stage 4 → Stage 5 → Stage 6
-│  TEST        │──── PASS ────▶
-└──────────────┘
-  │
-  ▼
-  ✅ DONE - Ready for commit
-```
-
----
-
-## Full Pipeline Usage
-
+### Invoke Pipeline
 ```bash
-# Run full pipeline for a new feature
-Use the frontend-code-review-test pipeline to implement [feature description]
+# Full pipeline
+Use the frontend-code-review-test pipeline to implement [feature]
 
-# Run specific stage (with automatic retry logic if fail)
-Analyze and plan [feature] using frontend-analysis-plan skill
-Implement [feature] using frontend-code skill
-Lint the code using frontend-lint skill
-Scan for security issues using frontend-security-scan skill
-Review [file] using frontend-review skill
-Run tests using frontend-test skill
-
-# When encountering fail:
-# - If Lint fail → Fix code then rerun Lint
-# - If Scan fail → Fix code then rerun Lint → Scan
-# - If Review fail → Fix code then rerun Lint → Scan → Review
-# - If Test fail → Fix code then rerun Lint → Scan → Review → Test
+# By stage
+Analyze using frontend-analysis-plan skill
+Implement using frontend-code skill
+Review using frontend-review skill
+Test using frontend-test skill
 ```
 
-## Quick Reference
+### Stage Reference
 
-| Stage | Skill | Command | Gate |
-|-------|-------|---------|------|
-| 1. Analyze | frontend-analysis-plan | Plan feature | Must pass |
-| 2. Code | frontend-code | Implement feature | No TS errors |
-| 3. Lint | frontend-lint | `npm run lint` | No errors |
-| 4. Scan | frontend-security-scan | `snyk code test` | No critical issues |
-| 5. Review | frontend-review | Review code | No critical issues |
-| 6. Test | frontend-test | `npm test` | All pass |
+| Stage | Skill | Gate |
+|-------|-------|------|
+| 1. Analyze | frontend-analysis-plan | Plan written |
+| 2. Implement | frontend-code | Code+Lint+Scan pass |
+| 3. Review | frontend-review | Approved |
+| 4. Test | frontend-test | All pass |
 
 ## Verification
 
-After completing all stages:
-- [ ] Implementation plan documented
-- [ ] Code passes linting
-- [ ] No security issues found
-- [ ] Code reviewed and approved
-- [ ] All tests pass
-- [ ] ✅ Ready for commit
+- [ ] Plan documented
+- [ ] Implement complete
+- [ ] Code reviewed
+- [ ] Tests pass
+- [ ] ✅ Ready

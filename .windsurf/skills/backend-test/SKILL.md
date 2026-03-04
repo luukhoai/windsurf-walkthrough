@@ -18,17 +18,22 @@ This skill guides through writing and maintaining professional tests for the Fla
 - **HTTP Testing**: Flask test client
 - **Assertions**: pytest assertions
 
+## Virtual Environment
+
+See `.windsurf/rules/backend-development.md` for virtual environment usage.
+
 ## Test File Structure
 
-File: `contact-form-app/backend/test_app.py`
+File: `contact-form-app/backend/tests/test_contacts.py`
 
 ```python
 import pytest
-from app import app
+from app import create_app
 
 @pytest.fixture
 def client():
     """Create a test client for the Flask app."""
+    app = create_app()
     app.config['TESTING'] = True
     with app.test_client() as client:
         yield client
@@ -38,7 +43,7 @@ def test_get_contacts_empty(client):
     response = client.get('/api/contacts')
     assert response.status_code == 200
     data = response.get_json()
-    assert data['contacts'] == []
+    assert data == []
 
 def test_create_contact_success(client):
     """Test POST /api/contacts with valid data."""
@@ -49,7 +54,8 @@ def test_create_contact_success(client):
     })
     assert response.status_code == 201
     data = response.get_json()
-    assert data['contact']['name'] == 'John Doe'
+    assert data['success'] is True
+    assert data['data']['name'] == 'John Doe'
 
 def test_create_contact_missing_fields(client):
     """Test POST /api/contacts with missing required fields."""
@@ -70,21 +76,21 @@ def test_create_contact_invalid_email(client):
 
 ## Running Tests
 
+See `.windsurf/rules/backend-development.md` for project structure.
+
 ### Run All Tests
 ```bash
-cd contact-form-app/backend
-source venv/bin/activate
-pytest -v
+pytest tests/ -v
 ```
 
 ### Run Specific Test
 ```bash
-pytest test_app.py::test_create_contact_success -v
+pytest tests/test_contacts.py::test_create_contact_success -v
 ```
 
 ### Run with Coverage
 ```bash
-pytest --cov=. --cov-report=html
+pytest tests/ --cov=app --cov-report=html
 ```
 
 ### Run in Watch Mode
@@ -120,6 +126,7 @@ def test_create_contact_invalid_email(client):
     })
     assert response.status_code == 400
     data = response.get_json()
+    assert data['success'] is False
     assert 'error' in data
 ```
 
@@ -164,15 +171,16 @@ assert response.status_code == 201
 
 # Response data
 data = response.get_json()
-assert 'contact' in data
-assert data['contact']['name'] == 'John'
+assert data['success'] is True
+assert data['data']['name'] == 'John'
 
 # Error responses
 assert response.status_code == 400
-assert 'error' in response.get_json()
+assert data['success'] is False
+assert 'error' in data
 
 # List responses
-contacts = data['contacts']
+contacts = data['data']
 assert len(contacts) == 1
 ```
 

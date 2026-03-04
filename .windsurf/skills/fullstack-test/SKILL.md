@@ -13,133 +13,24 @@ This skill guides through testing fullstack applications including backend API t
 - Testing frontend-backend integration
 - Debugging test failures
 
-## Test Categories
+## Process
 
-### 1. Backend Tests
-- Unit tests for API endpoints
-- Validation tests
-- Error handling tests
+### Step 1: Run Backend Tests
+Use `backend-test` skill to run backend tests.
 
-### 2. Frontend Tests
-- Component rendering tests
-- User interaction tests
-- Form validation tests
+### Step 2: Run Frontend Tests
+Use `frontend-test` skill to run frontend tests.
 
-### 3. Integration Tests
-- Frontend-backend communication
-- API response handling
-- Error flow testing
+### Step 3: Integration Testing
+- Start backend: see backend rules
+- Start frontend: see frontend rules
+- Test full flow in browser
 
-## Running Tests
+## Checklist
 
-### Backend Tests
-```bash
-cd contact-form-app/backend
-source venv/bin/activate
-
-# Run all tests
-pytest -v
-
-# Run with coverage
-pytest --cov=. --cov-report=term-missing
-```
-
-### Frontend Tests
-```bash
-cd contact-form-app/frontend
-
-# Run all tests
-npm test -- --watchAll=false
-
-# Run with coverage
-npm test -- --coverage --watchAll=false
-```
-
-### Run Both Together
-```bash
-# Backend
-cd contact-form-app/backend && source venv/bin/activate && pytest -v
-
-# Frontend
-cd contact-form-app/frontend && npm test -- --watchAll=false
-```
-
-## Test Patterns
-
-### Backend API Test
-```python
-def test_create_contact_success(client):
-    """Test POST /api/contacts with valid data."""
-    response = client.post('/api/contacts', json={
-        'name': 'John Doe',
-        'email': 'john@example.com',
-        'message': 'Hello world'
-    })
-    assert response.status_code == 201
-    data = response.get_json()
-    assert data['contact']['name'] == 'John Doe'
-```
-
-### Frontend Component Test
-```typescript
-it('renders contact form', () => {
-  render(<ContactForm />);
-  expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-});
-```
-
-### Integration Test (Manual)
-```bash
-# 1. Start backend
-cd contact-form-app/backend && source venv/bin/activate && python app.py &
-
-# 2. Start frontend
-cd contact-form-app/frontend && npm start
-
-# 3. Test in browser or with Cypress
-```
-
-## Test Checklist
-
-### Backend
-- [ ] Unit tests for new endpoints
-- [ ] Validation tests
-- [ ] Error handling tests
-- [ ] Edge cases covered
-
-### Frontend
-- [ ] Component tests
-- [ ] User interaction tests
-- [ ] Form validation tests
-- [ ] Edge cases covered
-
-### Integration
-- [ ] API integration working
-- [ ] Error responses handled
-- [ ] Loading states handled
-
-## Common Issues
-
-### Backend
-- Database not initialized for tests
-- Missing test fixtures
-- Async test issues
-
-### Frontend
-- Mock API calls
-- Async state updates
-- Component not rendering
-
-### Integration
-- CORS issues
-- API not running
-- Port conflicts
-
-## Related Skills
-
-- backend-test - For detailed backend testing
-- frontend-test - For detailed frontend testing
+- [ ] Backend tests pass (see backend-test)
+- [ ] Frontend tests pass (see frontend-test)
+- [ ] Integration tested
 
 ## How to Invoke
 

@@ -1,132 +1,130 @@
 ---
 name: Backend Code
-description: Professional backend Python code implementation following best practices
+description: Backend implementation: code + lint + security scan
 ---
 
 # Backend Code Skill
 
-This skill guides through professional backend Python development for the Flask contact form API.
+Implement backend code with linting and security scanning.
 
 ## When to Use
 - Implementing new API endpoints
 - Adding business logic
-- Modifying existing endpoints
 - Creating utility functions
+- After analysis stage
 
-## Code Standards
+## Concept
 
-### Project Structure
-```
-contact-form-app/backend/
-├── app.py              # Main Flask application
-├── requirements.txt    # Python dependencies
-├── test_app.py         # Unit tests
-└── venv/              # Virtual environment
-```
+- **This skill**: Implementation + Lint + Security Scan
+- **Review**: See `backend-review` skill
+- **Rules**: Standards (`.windsurf/rules/`)
 
-### Coding Conventions
-- Use Flask 2.3.3 with Flask-CORS for cross-origin requests
-- Follow PEP 8 style guide
-- Use 4 spaces for indentation
-- Maximum line length: 100 characters
-- Type hints for function signatures
+## Implementation
 
-### API Design Patterns
+See `.windsurf/rules/backend-development.md` for project structure.
 
-#### Endpoint Structure
+### Where to Add Code
+
+| Type | Location |
+|------|-----------|
+| New endpoint | `app/routes/new_resource.py` |
+| New model | `app/models/__init__.py` |
+| New validator | `app/utils/validators.py` |
+| New test | `tests/test_new_resource.py` |
+
+### Code Pattern
+
 ```python
-@app.route('/api/resource', methods=['POST'])
-def create_resource():
-    # 1. Parse and validate request
+# Route: app/routes/contacts.py
+from flask import Blueprint, request, jsonify
+
+contacts_bp = Blueprint('contacts', __name__)
+
+@contacts_bp.route('/api/contacts', methods=['POST'])
+def create_contact():
     data = request.get_json()
     if not data:
         return jsonify({'error': 'No data provided'}), 400
-
-    # 2. Validate input data
-    # 3. Process business logic
-    # 4. Return response
-    return jsonify({'result': 'success'}), 201
-```
-
-#### Error Handling
-```python
-from flask import jsonify
-
-@app.errorhandler(400)
-def bad_request(error):
-    return jsonify({'error': 'Bad request'}), 400
-
-@app.errorhandler(404)
-def not_found(error):
-    return jsonify({'error': 'Not found'}), 404
-
-@app.errorhandler(500)
-def internal_error(error):
-    return jsonify({'error': 'Internal server error'}), 500
-```
-
-#### Validation
-```python
-def validate_contact_data(data):
-    required_fields = ['name', 'email', 'message']
-    for field in required_fields:
-        if field not in data or not data[field]:
-            return False, f'{field} is required'
-    if not is_valid_email(data['email']):
-        return False, 'Invalid email format'
-    return True, None
-```
-
-### Security Guidelines
-- **SQL Injection**: Use parameterized queries if using databases
-- **Input Validation**: Validate and sanitize all user inputs
-- **CORS**: Configure CORS properly for trusted origins
-- **Error Messages**: Don't expose sensitive information in errors
-
-### Logging
-```python
-import logging
-
-logger = logging.getLogger(__name__)
-
-@app.route('/api/contacts', methods=['POST'])
-def create_contact():
-    logger.info(f"Received contact submission: {request.json}")
     # ... process
-    logger.info("Contact created successfully")
+    return jsonify({'success': True, 'data': result}), 201
 ```
 
-## File Locations
+## Lint
 
-### Where to Add New Code
+### Run Lint
+```bash
+cd contact-form-app/backend
+source venv/bin/activate
+flake8 app/ tests/ --max-line-length=100 --ignore=E501,W503
+```
 
-| Type | File | Example |
-|------|------|---------|
-| New API endpoint | `app.py` | `@app.route('/api/new', methods=['POST'])` |
-| Utility function | `app.py` | `def helper(): ...` |
-| Validation function | `app.py` | `def validate_data(data): ...` |
-| Error handler | `app.py` | `@app.errorhandler(Exception)` |
-| Tests | `test_app.py` | `def test_new_feature(): ...` |
+### Common Fixes
 
-## Implementation Checklist
+| Issue | Fix |
+|-------|-----|
+| Line too long | Split line |
+| Unused import | Remove import |
+| Missing type hint | Add `-> type` |
 
-- [ ] Parse request data properly
-- [ ] Validate all required fields
-- [ ] Add appropriate error handling
-- [ ] Return proper HTTP status codes
-- [ ] Add logging for debugging
-- [ ] Follow RESTful conventions
-- [ ] Add type hints
-- [ ] Write or update tests
+## Security Scan
+
+### Run Security Scan
+```bash
+snyk code test --severity-threshold=medium
+```
+
+### Security Checklist
+
+- [ ] Input validation implemented
+- [ ] No hardcoded secrets
+- [ ] Error messages don't expose internals
+
+## Commands
+
+### Run App
+```bash
+cd contact-form-app/backend
+source venv/bin/activate
+python run.py
+```
+
+### Run Tests
+```bash
+pytest tests/ -v
+```
+
+### Run Lint
+```bash
+flake8 app/ tests/
+```
+
+### Run Security Scan
+```bash
+snyk code test --severity-threshold=medium
+```
+
+## Checklist
+
+- [ ] Code follows project structure
+- [ ] Flask patterns correct
+- [ ] Error handling in place
+- [ ] Validation implemented
+- [ ] Logging added
+- [ ] Type hints used
+- [ ] Tests written
+- [ ] Lint passes
+- [ ] Security scan passes
 
 ## Related Rules
 
-See `.windsurf/rules/secure-development.md` for security guidelines:
-- Use parameterized queries (prevent SQL injection)
-- Validate and sanitize all user inputs
+See `.windsurf/rules/backend-development.md`
 
 ## How to Invoke
 
 ```
-Implement [feature description] using the backend-code skill
+Implement [feature] using the backend-code skill
 ```
+
+## Related Skills
+
+- **Review**: Use `backend-review` skill for code review

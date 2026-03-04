@@ -13,7 +13,7 @@ This skill guides through requirement analysis and planning for fullstack applic
 - When designing API contracts
 - Before major refactoring affecting both layers
 
-## Analysis Process
+## Process
 
 ### Step 1: Understand Requirements
 1. Read and understand the feature/fix description
@@ -21,18 +21,9 @@ This skill guides through requirement analysis and planning for fullstack applic
 3. Note any constraints or requirements
 4. Determine scope: backend only, frontend only, or both
 
-### Step 2: Explore Existing Code
-
-#### Backend Exploration
-- Find relevant files in `contact-form-app/backend/`
-- Understand current API endpoints
-- Identify data models and storage
-
-#### Frontend Exploration
-- Find relevant files in `contact-form-app/frontend/src/`
-- Understand current component structure
-- Identify state management patterns
-
+### Step 2: Analyze Each Layer
+- Use `backend-analysis-plan` skill for backend analysis
+- Use `frontend-analysis-plan` skill for frontend analysis
 ### Step 3: Design Solution
 
 #### Backend Design
@@ -121,8 +112,8 @@ Before implementing fullstack:
 ## Checklist
 
 - [ ] Requirements fully understood
-- [ ] Backend code explored
-- [ ] Frontend code explored
+- [ ] Backend analyzed (see backend-analysis-plan)
+- [ ] Frontend analyzed (see frontend-analysis-plan)
 - [ ] API contract defined
 - [ ] Solution designed for both layers
 - [ ] Edge cases identified

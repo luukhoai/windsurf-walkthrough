@@ -1,60 +1,38 @@
 ---
 name: Frontend Code
-description: Professional frontend React TypeScript code implementation following best practices
+description: Frontend implementation: code + lint + security scan
 ---
 
 # Frontend Code Skill
 
-This skill guides through professional frontend development for the React TypeScript contact form app.
+Implement frontend code with linting and security scanning.
 
 ## When to Use
 - Implementing new components
-- Adding new features to existing components
-- Modifying UI/UX
+- Adding new features
 - Creating utility functions
+- After analysis stage
 
-## Project Structure
-```
-contact-form-app/frontend/
-├── src/
-│   ├── components/       # React components
-│   ├── pages/           # Page components
-│   ├── utils/           # Utility functions
-│   ├── App.tsx          # Main app component
-│   └── index.tsx        # Entry point
-├── package.json
-└── tsconfig.json
-```
+## Concept
 
-## Coding Conventions
+- **This skill**: Implementation + Lint + Security Scan
+- **Review**: See `frontend-review` skill
+- **Rules**: Standards (`.windsurf/rules/`)
 
-### TypeScript
-- Use interfaces over types for object shapes
-- Use proper TypeScript types (no `any`)
-- Enable strict mode in tsconfig
+## Implementation
 
-### React Patterns
-- Use functional components with hooks
-- Use `useState` for local state
-- Use `useEffect` for side effects
-- Extract custom hooks for reusable logic
+See `.windsurf/rules/frontend-development.md` for project structure.
 
-### Styling
-- Use CSS modules or styled-components
-- Keep CSS separate from components
-- Follow BEM naming for CSS classes
+### Where to Add Code
 
-### Indentation
-- Use 2 spaces for indentation
+| Type | Location |
+|------|----------|
+| New component | `src/components/MyComponent.tsx` |
+| New page | `src/pages/MyPage.tsx` |
+| New utility | `src/utils/myUtils.ts` |
+| New CSS | Same folder as component |
 
-### File Naming
-- Components: `PascalCase` (e.g., `ContactForm.tsx`)
-- Utils: `camelCase` (e.g., `validation.ts`)
-- CSS: Match component name (e.g., `ContactForm.css`)
-
-## Component Patterns
-
-### Functional Component with Types
+### Component Pattern
 ```typescript
 interface Props {
   title: string;
@@ -62,16 +40,10 @@ interface Props {
 }
 
 const MyComponent: React.FC<Props> = ({ title, onSubmit }) => {
-  const [state, setState] = useState<string>('');
-
-  const handleClick = () => {
-    onSubmit({ value: state });
-  };
-
   return (
     <div className="my-component">
       <h1>{title}</h1>
-      <button onClick={handleClick}>Submit</button>
+      <button onClick={onSubmit}>Submit</button>
     </div>
   );
 };
@@ -79,105 +51,81 @@ const MyComponent: React.FC<Props> = ({ title, onSubmit }) => {
 export default MyComponent;
 ```
 
-### Form Component
-```typescript
-interface FormData {
-  name: string;
-  email: string;
-  message: string;
-}
+## Lint
 
-interface FormErrors {
-  name?: string;
-  email?: string;
-  message?: string;
-}
-
-const [formData, setFormData] = useState<FormData>({
-  name: '',
-  email: '',
-  message: '',
-});
-
-const [errors, setErrors] = useState<FormErrors>({});
-
-const handleChange = (
-  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-) => {
-  const { name, value } = e.target;
-  setFormData(prev => ({ ...prev, [name]: value }));
-};
+### Run Lint
+```bash
+cd contact-form-app/frontend
+npm run lint
 ```
 
-### API Call
-```typescript
-const submitForm = async (data: FormData) => {
-  try {
-    const response = await fetch('http://localhost:5000/api/contacts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+### Common Fixes
 
-    if (!response.ok) {
-      throw new Error('Failed to submit');
-    }
+| Issue | Fix |
+|-------|-----|
+| `any` type | Use proper type |
+| Missing dependency | Add to useEffect deps |
+| Missing key | Add unique key in map |
 
-    return await response.json();
-  } catch (error) {
-    console.error('Error:', error);
-    throw error;
-  }
-};
+## Security Scan
+
+### Run Security Scan
+```bash
+snyk code test --severity-threshold=medium
+npm audit
 ```
 
-## File Locations
+### Security Checklist
 
-### Where to Add New Code
+- [ ] No XSS vulnerabilities
+- [ ] No hardcoded secrets
+- [ ] Input validation implemented
 
-| Type | Location | Notes |
-|------|----------|-------|
-| New component | `src/components/MyComponent.tsx` | PascalCase |
-| New page | `src/pages/MyPage.tsx` | PascalCase |
-| New utility | `src/utils/myUtils.ts` | camelCase |
-| New CSS | Same folder as component | Match component name |
-| Update App | `src/App.tsx` | Import and add component |
+## Commands
 
-### How to Add Component to App
-```typescript
-// src/App.tsx
-import MyComponent from './components/MyComponent';
-
-function App() {
-  return (
-    <div className="App">
-      <MyComponent title="Hello" onAction={() => {}} />
-    </div>
-  );
-}
+### Run App
+```bash
+cd contact-form-app/frontend
+npm start
 ```
 
-## Implementation Checklist
+### Run Tests
+```bash
+npm test -- --watchAll=false
+```
 
-- [ ] TypeScript interfaces/types defined
-- [ ] Component properly typed
-- [ ] State management implemented
-- [ ] Event handlers typed
+### Run Lint
+```bash
+npm run lint
+```
+
+### Run Security Scan
+```bash
+snyk code test --severity-threshold=medium
+npm audit
+```
+
+## Checklist
+
+- [ ] Code follows React patterns
+- [ ] TypeScript types proper
+- [ ] State management appropriate
 - [ ] Error handling in place
-- [ ] Loading states handled
 - [ ] Accessibility considered
-- [ ] CSS properly structured
+- [ ] Tests written
+- [ ] Lint passes
+- [ ] Security scan passes
 
 ## Related Rules
 
-See `.windsurf/rules/code-style-guide.md` for code style guidelines:
-- Use functional components (avoid class-based)
-- Use 2 spaces for indentation
+See `.windsurf/rules/frontend-development.md`
 
 ## How to Invoke
 
 ```
 Implement [feature] using the frontend-code skill
 ```
+
+## Related Skills
+
+- **Review**: Use `frontend-review` skill for code review

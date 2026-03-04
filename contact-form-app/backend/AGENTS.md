@@ -1,5 +1,25 @@
 # Backend API Guidelines
 
+## Development Environment
+
+### Python Virtual Environment
+- **Always use the virtual environment** when running Python commands
+- Activate venv: `source venv/bin/activate`
+- Or use explicit path: `venv/bin/python` or `venv/bin/python3`
+
+```bash
+# Correct way to run commands
+cd contact-form-app/backend
+source venv/bin/activate
+python run.py
+pytest tests/ -v
+
+# Or use explicit path
+cd contact-form-app/backend
+venv/bin/python run.py
+venv/bin/python -m pytest tests/ -v
+```
+
 ## Endpoint Structure
 - Use RESTful conventions for all endpoints
 - Return consistent JSON response format: `{ success: boolean, data?: any, error?: string }`
