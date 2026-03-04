@@ -1,20 +1,26 @@
+"""Unit tests for contacts API."""
 import pytest
 import tempfile
-from app import app
+from app import create_app
 
 
 @pytest.fixture
 def client():
+    """Create test client with temporary configuration."""
+    app = create_app('testing')
     app.config['TESTING'] = True
+
     # Create temporary upload folder for testing
     with tempfile.TemporaryDirectory() as temp_dir:
         app.config['UPLOAD_FOLDER'] = temp_dir
         # Clear contacts list before each test
-        app.contacts = []
+        app.config['CONTACTS_STORE'] = []
+
         with app.test_client() as client:
             yield client
+
         # Clear contacts after each test
-        app.contacts = []
+        app.config['CONTACTS_STORE'] = []
 
 
 def test_submit_contact_success(client):
@@ -54,8 +60,6 @@ def test_submit_contact_with_file(client):
     response_data = response.get_json()
     assert response_data['success'] is True
     assert response_data['data']['name'] == 'Jane Doe'
-    # Note: File attachment might be None if file is empty
-    # This is acceptable behavior for the test
 
 
 def test_submit_contact_validation_error(client):
@@ -117,9 +121,6 @@ def test_get_contacts(client):
 
 def test_search_contacts_success(client):
     """Test GET /api/contacts/search with valid query."""
-    # Clear contacts first
-    app.contacts = []
-
     # First add some test contacts
     client.post('/api/contacts', json={
         'name': 'John Doe',
@@ -191,9 +192,6 @@ def test_search_contacts_invalid_order(client):
 
 def test_search_contacts_specific_field(client):
     """Test GET /api/contacts/search searching in specific field."""
-    # Clear contacts first
-    app.contacts = []
-
     # Add test contacts
     client.post('/api/contacts', json={
         'name': 'John Doe',
@@ -217,9 +215,6 @@ def test_search_contacts_specific_field(client):
 
 def test_search_contacts_sorting(client):
     """Test GET /api/contacts/search with sorting parameters."""
-    # Clear contacts first
-    app.contacts = []
-
     # Add test contacts
     client.post('/api/contacts', json={
         'name': 'Alice Smith',
@@ -245,9 +240,6 @@ def test_search_contacts_sorting(client):
 
 def test_search_contacts_case_insensitive(client):
     """Test that search is case insensitive."""
-    # Clear contacts first
-    app.contacts = []
-
     client.post('/api/contacts', json={
         'name': 'John Doe',
         'email': 'john@example.com',
@@ -282,3 +274,55 @@ def test_search_contacts_special_characters(client):
     assert data['success'] is True
     assert len(data['data']) == 1
     assert data['data'][0]['message'] == 'Message with special chars: !@#$%'
+
+
+def test_check_email_endpoint(client):
+    """Test the check-email endpoint."""
+    # First create a contact
+    client.post('/api/contacts', json={
+        'name': 'John Doe',
+        'email': 'john@example.com',
+        'message': 'Test message'
+    })
+
+    # Check existing email
+    response = client.get('/api/contacts/check-email?email=john@example.com')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['success'] is True
+    assert data['data']['exists'] is True
+
+    # Check non-existing email
+    response = client.get('/api/contacts/check-email?email=nonexistent@example.com')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['success'] is True
+    assert data['data']['exists'] is False
+
+    # Check with invalid email format
+    response = client.get('/api/contacts/check-email?email=invalid')
+    assert response.status_code == 400
+    data = response.get_json()
+    assert data['success'] is False
+
+
+def test_duplicate_email_rejection(client):
+    """Test that duplicate emails are rejected."""
+    # First contact submission
+    response = client.post('/api/contacts', json={
+        'name': 'John Doe',
+        'email': 'john@example.com',
+        'message': 'First message'
+    })
+    assert response.status_code == 201
+
+    # Second contact with same email should fail
+    response = client.post('/api/contacts', json={
+        'name': 'Jane Doe',
+        'email': 'john@example.com',
+        'message': 'Second message'
+    })
+    assert response.status_code == 409
+    data = response.get_json()
+    assert data['success'] is False
+    assert 'already exists' in data['error'].lower()
