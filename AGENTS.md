@@ -6,6 +6,44 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a sample contact form application demonstrating a React TypeScript frontend with a Flask Python backend. The project is primarily used as a walkthrough/demo for the Windsurf Editor, but contains functional application code in `contact-form-app/`.
 
+## Project Structure
+
+### Frontend
+```
+contact-form-app/frontend/
+├── src/
+│   ├── components/       # React components
+│   ├── pages/           # Page components
+│   ├── utils/           # Utility functions
+│   ├── App.tsx          # Main app component
+│   └── index.tsx        # Entry point
+├── package.json
+└── tsconfig.json
+```
+
+### Backend
+```
+contact-form-app/backend/
+├── app/
+│   ├── __init__.py          # Flask app factory (create_app)
+│   ├── config.py            # Configuration (Dev/Testing/Prod)
+│   ├── models/
+│   │   └── __init__.py      # Contact model
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   └── contacts.py       # Contact API routes
+│   └── utils/
+│       ├── __init__.py
+│       ├── validators.py     # Validation functions
+│       └── helpers.py        # File handling helpers
+├── tests/
+│   ├── __init__.py
+│   └── test_contacts.py     # Unit tests
+├── run.py                   # Entry point
+├── requirements.txt
+└── uploads/                 # File uploads directory
+```
+
 ## Common Commands
 
 ### Frontend (React + TypeScript)
@@ -24,12 +62,12 @@ cd contact-form-app/backend
 python3 -m venv venv
 source venv/bin/activate  # On Unix/macOS
 pip install -r requirements.txt
-python app.py              # Start server on localhost:5000
+python run.py              # Start server on localhost:5000
 ```
 
 ### Running Specific Tests
 - Frontend: `npm test -- --watchAll=false` to run once
-- Backend: `pytest` (after installing pytest)
+- Backend: `pytest tests/ -v` (after activating venv)
 
 ## Architecture
 

@@ -16,27 +16,7 @@ When running backend commands, prefix with venv/bin/python
 - Add type hints to function signatures
 
 ## Project Structure
-```
-contact-form-app/backend/
-├── app/
-│   ├── __init__.py          # Flask app factory (create_app)
-│   ├── config.py            # Configuration (Dev/Testing/Prod)
-│   ├── models/
-│   │   └── __init__.py      # Contact model
-│   ├── routes/
-│   │   ├── __init__.py
-│   │   └── contacts.py       # Contact API routes
-│   └── utils/
-│       ├── __init__.py
-│       ├── validators.py     # Validation functions
-│       └── helpers.py        # File handling helpers
-├── tests/
-│   ├── __init__.py
-│   └── test_contacts.py     # Unit tests
-├── run.py                   # Entry point
-├── requirements.txt
-└── uploads/                 # File uploads directory
-```
+See `AGENTS.md` for full project structure.
 
 ## Security Requirements
 - Validate all user inputs

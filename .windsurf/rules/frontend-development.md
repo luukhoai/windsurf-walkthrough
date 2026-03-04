@@ -11,17 +11,7 @@ globs: ["**/*.tsx", "**/*.ts", "**/*.css"]
 - Follow React best practices for state management
 
 ## Project Structure
-```
-contact-form-app/frontend/
-├── src/
-│   ├── components/       # React components
-│   ├── pages/           # Page components
-│   ├── utils/           # Utility functions
-│   ├── App.tsx          # Main app component
-│   └── index.tsx        # Entry point
-├── package.json
-└── tsconfig.json
-```
+See `AGENTS.md` for full project structure.
 
 ## Coding Conventions
 
