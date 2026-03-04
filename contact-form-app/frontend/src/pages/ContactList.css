@@ -113,11 +113,24 @@
 
 .table-container {
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e1e5e9;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e8eaed;
   margin-bottom: 2rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.table-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3498db 0%, #2980b9 50%, #21618c 100%);
+  z-index: 1;
 }
 
 .contacts-table {
@@ -130,10 +143,13 @@
 .contacts-table thead {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   border-bottom: 2px solid #e1e5e9;
+  position: sticky;
+  top: 0;
+  z-index: 5;
 }
 
 .contacts-table th {
-  padding: 1.25rem 1.5rem;
+  padding: 1.5rem 1.5rem;
   text-align: left;
   font-weight: 700;
   color: #2c3e50;
@@ -143,6 +159,7 @@
   border-bottom: 1px solid #e1e5e9;
   position: relative;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .sortable-header {
@@ -150,6 +167,18 @@
   user-select: none;
   transition: all 0.2s ease;
   position: relative;
+  padding-right: 2rem;
+}
+
+.sortable-header::after {
+  content: '↕️';
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  opacity: 0.6;
+  transition: all 0.2s ease;
 }
 
 .sortable-header:hover {
@@ -157,19 +186,21 @@
   color: #3498db;
 }
 
-.sortable-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: transparent;
-  transition: background 0.2s ease;
+.sortable-header:hover::after {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.2);
 }
 
-.sortable-header:hover::after {
-  background: #3498db;
+/* Add subtle animations for table rows */
+@keyframes rowSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .contacts-table tbody tr {
@@ -177,12 +208,27 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   cursor: pointer;
+  background: #ffffff;
+  animation: rowSlideIn 0.3s ease forwards;
 }
 
 .contacts-table tbody tr:hover {
-  background: linear-gradient(135deg, #f8f9ff 0%, #e8f4f8 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(52, 152, 219, 0.1);
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 8px 25px rgba(52, 152, 219, 0.15);
+  border-color: #3498db;
+  z-index: 10;
+}
+
+.contacts-table tbody tr:hover::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #3498db 0%, #2980b9 100%);
+  border-radius: 2px 0 0 2px;
 }
 
 .contacts-table tbody tr:hover::after {
@@ -193,13 +239,59 @@
   bottom: 0;
   height: 3px;
   background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+  border-radius: 0 0 2px 2px;
+}
+
+.contacts-table tbody tr:hover td {
+  color: #2c3e50;
+  transform: translateX(2px);
+}
+
+.contacts-table tbody tr:hover .contact-avatar {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+.contacts-table tbody tr:hover .contact-name-text {
+  color: #2980b9;
+  font-weight: 700;
+}
+
+.contacts-table tbody tr:hover .email-link {
+  color: #2980b9;
+  font-weight: 600;
+}
+
+.contacts-table tbody tr:hover .message-cell {
+  color: #495057;
+  font-weight: 500;
+}
+
+.contacts-table tbody tr:hover .attachment-cell {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
+  border-color: #3498db;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
 }
 
 .contacts-table td {
-  padding: 1.25rem 1.5rem;
+  padding: 1.5rem 1.5rem;
   vertical-align: middle;
   color: #495057;
-  border-bottom: 1px solid #f1f3f4;
+  border-bottom: 1px solid #f8f9fa;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.contacts-table td:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 25%;
+  bottom: 25%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent 0%, #e9ecef 50%, transparent 100%);
+  opacity: 0.5;
 }
 
 .contact-name .name-cell {
@@ -209,8 +301,8 @@
 }
 
 .contact-avatar {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
   color: white;
@@ -218,10 +310,12 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
   position: relative;
+  transition: all 0.3s ease;
+  border: 3px solid #ffffff;
 }
 
 .contact-avatar::after {

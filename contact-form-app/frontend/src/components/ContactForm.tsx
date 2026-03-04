@@ -9,6 +9,18 @@ import {
   formatFileSize,
 } from "../utils/validation";
 import { submitContactForm } from "../utils/api";
+import {
+  Form,
+  FormGroup,
+  FormLabel,
+  FormControl,
+  FormText,
+  Button,
+  Alert,
+  InputGroup,
+  Row,
+  Col,
+} from "react-bootstrap";
 
 const ContactForm: React.FC = () => {
   const [formData, setFormData] = useState<ContactFormData>({
@@ -132,130 +144,131 @@ const ContactForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="contact-form" noValidate>
-      <div className="form-group">
-        <label htmlFor="name" className="form-label">
+    <Form onSubmit={handleSubmit} noValidate>
+      <FormGroup className="mb-3">
+        <FormLabel htmlFor="name">
           Name{" "}
-          <span className="required" aria-label="required">
+          <span className="text-danger" aria-label="required">
             *
           </span>
-        </label>
-        <input
+        </FormLabel>
+        <FormControl
           type="text"
           id="name"
           name="name"
           value={formData.name}
           onChange={handleChange}
-          className={`form-input ${errors.name ? "error" : ""}`}
+          isInvalid={!!errors.name}
           aria-required="true"
           aria-describedby={errors.name ? "name-error" : undefined}
           disabled={isSubmitting}
           placeholder="Enter your name"
         />
         {errors.name && (
-          <div id="name-error" className="error-message" role="alert">
+          <div className="invalid-feedback d-block" id="name-error">
             {errors.name}
           </div>
         )}
-      </div>
+      </FormGroup>
 
-      <div className="form-group">
-        <label htmlFor="email" className="form-label">
+      <FormGroup className="mb-3">
+        <FormLabel htmlFor="email">
           Email{" "}
-          <span className="required" aria-label="required">
+          <span className="text-danger" aria-label="required">
             *
           </span>
-        </label>
-        <input
+        </FormLabel>
+        <FormControl
           type="email"
           id="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
-          className={`form-input ${errors.email ? "error" : ""}`}
+          isInvalid={!!errors.email}
           aria-required="true"
           aria-describedby={errors.email ? "email-error" : undefined}
           disabled={isSubmitting}
           placeholder="Enter your email address"
         />
         {errors.email && (
-          <div id="email-error" className="error-message" role="alert">
+          <div className="invalid-feedback d-block" id="email-error">
             {errors.email}
           </div>
         )}
-      </div>
+      </FormGroup>
 
-      <div className="form-group">
-        <label htmlFor="message" className="form-label">
+      <FormGroup className="mb-3">
+        <FormLabel htmlFor="message">
           Message{" "}
-          <span className="required" aria-label="required">
+          <span className="text-danger" aria-label="required">
             *
           </span>
-        </label>
-        <textarea
+        </FormLabel>
+        <FormControl
+          as="textarea"
           id="message"
           name="message"
           value={formData.message}
           onChange={handleChange}
-          className={`form-textarea ${errors.message ? "error" : ""}`}
+          isInvalid={!!errors.message}
           aria-required="true"
           aria-describedby={errors.message ? "message-error" : undefined}
           disabled={isSubmitting}
           placeholder="Enter your message (10-500 characters)"
           rows={5}
+          style={{ minHeight: "120px", resize: "vertical" }}
         />
         {errors.message && (
-          <div id="message-error" className="error-message" role="alert">
+          <div className="invalid-feedback d-block" id="message-error">
             {errors.message}
           </div>
         )}
-      </div>
+      </FormGroup>
 
-      <div className="form-group">
-        <label htmlFor="attachment" className="form-label">
-          Attachment (Optional)
-        </label>
-        <input
+      <FormGroup className="mb-4">
+        <FormLabel htmlFor="attachment">Attachment (Optional)</FormLabel>
+        <FormControl
           type="file"
           id="attachment"
           name="attachment"
           onChange={handleFileChange}
-          className={`form-input ${errors.attachment ? "error" : ""}`}
+          isInvalid={!!errors.attachment}
           aria-describedby={errors.attachment ? "attachment-error" : undefined}
           disabled={isSubmitting}
           accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
         />
         {formData.attachment && (
-          <div className="file-info">
-            Selected: {formData.attachment.name} (
-            {formatFileSize(formData.attachment.size)})
-          </div>
+          <FormText className="text-success mt-2">
+            Selected: {formData.attachment.name} ({formatFileSize(formData.attachment.size)})
+          </FormText>
         )}
         {errors.attachment && (
-          <div id="attachment-error" className="error-message" role="alert">
+          <div className="invalid-feedback d-block" id="attachment-error">
             {errors.attachment}
           </div>
         )}
-        <div className="file-help">
+        <FormText className="text-muted">
           Allowed types: PDF, DOC, DOCX, TXT, JPG, JPEG, PNG (Max: 5MB)
-        </div>
-      </div>
+        </FormText>
+      </FormGroup>
 
       {submitStatus === "success" && (
-        <div className="success-message" role="status">
+        <Alert variant="success" role="status" className="mb-3">
           {submitMessage}
-        </div>
+        </Alert>
       )}
 
       {submitStatus === "error" && (
-        <div className="error-message" role="alert">
+        <Alert variant="danger" role="alert" className="mb-3">
           {submitMessage}
-        </div>
+        </Alert>
       )}
 
-      <button
+      <Button
         type="submit"
-        className="submit-button"
+        variant="primary"
+        size="lg"
+        className="w-100"
         disabled={
           isSubmitting ||
           Object.keys(errors).length > 0 ||
@@ -266,8 +279,8 @@ const ContactForm: React.FC = () => {
         aria-busy={isSubmitting}
       >
         {isSubmitting ? "Submitting..." : "Submit"}
-      </button>
-    </form>
+      </Button>
+    </Form>
   );
 };
 
