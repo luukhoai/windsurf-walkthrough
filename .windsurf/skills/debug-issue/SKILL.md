@@ -1,5 +1,5 @@
 ---
-name: Debug Issue
+name: debug-issue
 description: Systematic approach to debugging issues in the contact form app
 ---
 

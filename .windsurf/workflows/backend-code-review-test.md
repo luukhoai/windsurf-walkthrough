@@ -1,6 +1,6 @@
 ---
-name: Backend Code-Review-Test Pipeline
-description: Professional CI-style pipeline for backend: analyze → implement → test → review
+name: backend-code-review-test
+description: Professional CI-style pipeline for backend analyze → implement → test → review
 ---
 
 # Backend Code-Review-Test Pipeline

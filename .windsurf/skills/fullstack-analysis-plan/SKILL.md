@@ -1,5 +1,5 @@
 ---
-name: Fullstack Analysis Plan
+name: fullstack-analysis-plan
 description: Analysis and planning skill for fullstack development tasks (backend + frontend)
 ---
 

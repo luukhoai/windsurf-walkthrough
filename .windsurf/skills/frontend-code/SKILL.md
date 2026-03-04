@@ -1,5 +1,5 @@
 ---
-name: Frontend Code
+name: frontend-code
 description: Frontend implementation skill with lint
 ---
 

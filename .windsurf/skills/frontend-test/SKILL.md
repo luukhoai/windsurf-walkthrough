@@ -1,5 +1,5 @@
 ---
-name: Frontend Test
+name: frontend-test
 description: Professional frontend testing skill for React TypeScript applications
 ---
 

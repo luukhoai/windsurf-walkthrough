@@ -1,5 +1,5 @@
 ---
-name: Frontend Analysis Plan
+name: frontend-analysis-plan
 description: Analysis and planning skill for frontend development tasks
 ---
 

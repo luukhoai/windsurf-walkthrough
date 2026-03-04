@@ -1,5 +1,5 @@
 ---
-name: Frontend Review
+name: frontend-review
 description: Code review skill specialized for React TypeScript frontend
 ---
 

@@ -1,5 +1,5 @@
 ---
-name: Backend Test
+name: backend-test
 description: Professional backend testing skill for Flask Python applications
 ---
 

@@ -1,6 +1,6 @@
 ---
-name: Frontend Code-Review-Test Pipeline
-description: Professional CI-style pipeline for frontend: analyze → implement → test → review
+name: frontend-code-review-test
+description: Professional CI-style pipeline for frontend analyze → implement → test → review
 ---
 
 # Frontend Code-Review-Test Pipeline

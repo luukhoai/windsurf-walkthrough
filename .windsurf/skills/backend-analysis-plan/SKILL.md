@@ -1,5 +1,5 @@
 ---
-name: Backend Analysis Plan
+name: backend-analysis-plan
 description: Analysis and planning skill for backend development tasks
 ---
 

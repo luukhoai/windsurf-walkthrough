@@ -1,5 +1,5 @@
 ---
-name: Backend Review
+name: backend-review
 description: Code review skill specialized for Python Flask backend
 ---
 

@@ -1,5 +1,5 @@
 ---
-name: Backend Code
+name: backend-code
 description: Backend implementation skill with lint
 ---
 

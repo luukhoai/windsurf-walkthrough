@@ -1,5 +1,5 @@
 ---
-name: Fullstack Test
+name: fullstack-test
 description: Testing skill for fullstack applications (backend + frontend)
 ---
 
