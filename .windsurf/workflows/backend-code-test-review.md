@@ -1,9 +1,9 @@
 ---
-name: frontend-code-review-test
-description: Professional CI-style pipeline for frontend analyze → implement → test → review
+name: backend-code-test-review
+description: Professional CI-style pipeline for backend analyze → implement → test → review
 ---
 
-# Frontend Code-Review-Test Pipeline
+# Backend Code-Test-Review Pipeline
 
 ## Concept
 
@@ -21,13 +21,13 @@ description: Professional CI-style pipeline for frontend analyze → implement �
 
 ## Prerequisites
 
-See `.windsurf/rules/frontend-development.md`
+See `.windsurf/rules/backend-development.md`
 
 ---
 
 ## Stage 1: Analyze & Plan
 
-**Skill:** `frontend-analysis-plan`
+**Skill:** `backend-analysis-plan`
 
 ### Gate: Plan written
 
@@ -35,23 +35,23 @@ See `.windsurf/rules/frontend-development.md`
 
 ## Stage 2: Implement
 
-**Skill:** `frontend-code`
+**Skill:** `backend-code`
 
 Includes: Code + Lint + Security Scan
 
 ### Commands
 ```bash
-cd contact-form-app/frontend
+cd contact-form-app/backend
+source venv/bin/activate
 
 # Run app
-npm start
+python run.py
 
 # Run lint
-npm run lint
+flake8 app/ tests/
 
 # Run security scan
 snyk code test --severity-threshold=medium
-npm audit
 ```
 
 ### Gate: Code + Lint + Security pass
@@ -60,11 +60,11 @@ npm audit
 
 ## Stage 3: Test
 
-**Skill:** `frontend-test`
+**Skill:** `backend-test`
 
 ### Command
 ```bash
-npm test -- --watchAll=false
+pytest tests/ -v
 ```
 
 ### Gate: All tests pass
@@ -73,7 +73,7 @@ npm test -- --watchAll=false
 
 ## Stage 4: Review
 
-**Skill:** `frontend-review`
+**Skill:** `backend-review`
 
 ### Gate: Code reviewed
 
@@ -84,23 +84,23 @@ npm test -- --watchAll=false
 ### Invoke Pipeline
 ```bash
 # Full pipeline
-Use the frontend-code-review-test pipeline to implement [feature]
+Use the backend-code-review-test pipeline to implement [feature]
 
 # By stage
-Analyze using frontend-analysis-plan skill
-Implement using frontend-code skill
-Test using frontend-test skill
-Review using frontend-review skill
+Analyze using backend-analysis-plan skill
+Implement using backend-code skill
+Test using backend-test skill
+Review using backend-review skill
 ```
 
 ### Stage Reference
 
 | Stage | Skill | Gate |
 |-------|-------|------|
-| 1. Analyze | frontend-analysis-plan | Plan written |
-| 2. Implement | frontend-code | Code+Lint pass |
-| 3. Test | frontend-test | All tests pass |
-| 4. Review | frontend-review | Approved |
+| 1. Analyze | backend-analysis-plan | Plan written |
+| 2. Implement | backend-code | Code+Lint pass |
+| 3. Test | backend-test | All tests pass |
+| 4. Review | backend-review | Approved |
 
 ## Verification
 

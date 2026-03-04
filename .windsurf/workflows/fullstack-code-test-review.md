@@ -1,9 +1,9 @@
 ---
-name: fullstack-code-review-test
+name: fullstack-code-test-review
 description: Professional CI-style pipeline for fullstack analyze → implement → test → review
 ---
 
-# Fullstack Code-Review-Test Pipeline
+# Fullstack Code-Test-Review Pipeline
 
 ## Concept
 
