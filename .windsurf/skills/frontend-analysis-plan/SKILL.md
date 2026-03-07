@@ -1,87 +1,222 @@
 ---
 name: frontend-analysis-plan
-description: Analysis and planning skill for frontend development tasks
+description: Production-ready analysis and planning skill for comprehensive frontend architecture
 ---
 
 # Frontend Analysis Plan Skill
 
-This skill guides through requirement analysis and planning before frontend implementation.
+This skill guides through comprehensive requirement analysis and architectural planning for production frontend systems.
 
 ## When to Use
-- Before starting any new feature
-- When requirements are unclear
-- Before major refactoring
-- When adding new components
+- Before starting any new feature or component
+- When requirements are unclear or complex
+- Before major refactoring or architecture changes
+- When designing scalable frontend systems
+- For enterprise application planning
+- When implementing design systems or component libraries
 
-## Analysis Process
+## Production Analysis Process
 
-### Step 1: Understand Requirements
-1. Read and understand the feature/fix description
-2. Identify the goal and expected outcome
-3. Note any constraints or requirements
-4. Check for edge cases and responsive considerations
+### Step 1: Understand Business Requirements
+1. **User Stories & Acceptance Criteria**
+   - Read and understand user stories and requirements
+   - Identify the core user journey and expected outcomes
+   - Define success criteria and measurable KPIs
+   - Note any business constraints or SLAs
 
-### Step 2: Explore Existing Code
-1. Find relevant files in `contact-form-app/frontend/src/`
-2. Understand current component structure
-3. Identify affected components
-4. Note state management patterns
+2. **User Experience Requirements**
+   - Identify target user personas and use cases
+   - Define accessibility requirements (WCAG compliance)
+   - Consider internationalization and localization needs
+   - Plan responsive design requirements
 
-### Step 3: Design Solution
-1. Plan the component structure
-2. Consider TypeScript interfaces/types
-3. Identify props and state needed
-4. Plan API integration if any
+3. **Performance Requirements**
+   - Define Core Web Vitals targets (LCP, FID, CLS)
+   - Identify load time requirements
+   - Consider bundle size constraints
+   - Plan for mobile performance optimization
 
-### Step 4: Document Plan
-1. Write a brief implementation plan
-2. List files that need to be modified
-3. Note any new components/tests required
-4. Identify potential issues
+### Step 2: Analyze Technical Context
+1. **Existing Architecture Review**
+   - Find relevant files in `contact-form-app/frontend/src/`
+   - Understand current component structure and patterns
+   - Identify affected components and dependencies
+   - Review state management implementation
 
-## Questions to Answer
+2. **Design System Integration**
+   - Review existing design tokens and theme system
+   - Identify reusable components and patterns
+   - Plan component composition strategies
+   - Consider styling architecture (CSS Modules, CSS-in-JS)
 
-Before implementing:
-- What is the expected UI/UX?
-- What are the edge cases?
-- Does it integrate with existing components?
-- What tests are needed?
-- Are there accessibility considerations?
+3. **Integration Points**
+   - Identify API integration requirements
+   - Plan state management strategies
+   - Consider external service dependencies
+   - Review routing and navigation patterns
 
-## Implementation Plan Template
+### Step 3: Design Production Solution
+1. **Component Architecture**
+   - Apply Atomic Design principles (Atoms, Molecules, Organisms)
+   - Plan component composition and reusability
+   - Design component interfaces and contracts
+   - Consider component lifecycle and state management
+
+2. **TypeScript Architecture**
+   - Design comprehensive type interfaces
+   - Plan generic components and utilities
+   - Define type-safe API contracts
+   - Consider type inheritance and composition
+
+3. **State Management Design**
+   - Choose appropriate state management patterns
+   - Plan local vs global state distribution
+   - Design data flow and prop drilling solutions
+   - Consider server state management (React Query)
+
+4. **Performance Architecture**
+   - Plan code splitting strategies
+   - Design lazy loading implementation
+   - Consider bundle optimization techniques
+   - Plan image and asset optimization
+
+5. **Accessibility Architecture**
+   - Design semantic HTML structure
+   - Plan ARIA implementation strategy
+   - Consider keyboard navigation flow
+   - Design screen reader compatibility
+
+### Step 4: Production Planning
+1. **Testing Strategy**
+   - Unit tests for components and hooks (>80% coverage)
+   - Integration tests for component interactions
+   - E2E tests for critical user journeys
+   - Accessibility testing with axe-core
+   - Visual regression testing strategy
+
+2. **Development Workflow**
+   - Plan component development approach
+   - Design Storybook documentation strategy
+   - Plan code review and quality gates
+   - Consider CI/CD integration requirements
+
+3. **Deployment Strategy**
+   - Plan build optimization and bundling
+   - Consider environment-specific configurations
+   - Design performance monitoring strategy
+   - Plan error tracking and analytics
+
+## Production Questions to Answer
+
+Before implementing, clarify:
+- **User Impact**: What is the user value and experience improvement?
+- **Accessibility**: What WCAG compliance level is required?
+- **Performance**: What are the Core Web Vitals targets?
+- **Browser Support**: Which browsers and versions need support?
+- **Mobile Requirements**: What mobile experience is expected?
+- **Internationalization**: Are multiple languages required?
+- **Design System**: How does this integrate with existing design system?
+- **Testing Strategy**: What testing approach ensures quality?
+
+## Production Implementation Plan Template
 
 ```
 ## Implementation Plan for [Feature]
 
-### Files to Modify
-- `App.tsx` - [description]
-- `components/` - [description]
+### Business Requirements
+- User Stories: [user story descriptions]
+- Success Criteria: [measurable outcomes]
+- KPIs: [key performance indicators]
+- Accessibility Requirements: [WCAG compliance level]
 
-### New Files
-- [if any new components]
+### Technical Architecture
+- Component Design: [Atomic Design structure]
+- TypeScript Interfaces: [type definitions]
+- State Management: [local/global/server state strategy]
+- API Integration: [data fetching and caching]
 
-### Tests to Add/Update
-- [test names]
+### Performance Strategy
+- Bundle Optimization: [code splitting, lazy loading]
+- Image Optimization: [formats, lazy loading]
+- Core Web Vitals: [target metrics]
+- Monitoring: [performance tracking]
 
-### Edge Cases
-- [case 1]
-- [case 2]
+### Accessibility Implementation
+- Semantic HTML: [structure and landmarks]
+- ARIA Implementation: [roles, states, labels]
+- Keyboard Navigation: [flow and shortcuts]
+- Testing Strategy: [automated and manual testing]
 
-### Potential Issues
-- [issue 1 and mitigation]
+### Testing Strategy
+- Unit Tests: [component and hook testing]
+- Integration Tests: [component interactions]
+- E2E Tests: [critical user journeys]
+- Accessibility Tests: [axe-core integration]
+- Visual Tests: [regression testing]
+
+### Development Workflow
+- Component Development: [development approach]
+- Storybook Documentation: [documentation strategy]
+- Code Review: [review checklist]
+- Quality Gates: [automated checks]
+
+### Deployment & Operations
+- Build Configuration: [optimization settings]
+- Environment Setup: [configuration management]
+- Performance Monitoring: [metrics and alerts]
+- Error Tracking: [logging and analytics]
+
+### Risk Assessment
+- Technical Risks: [complexity, dependencies]
+- Performance Risks: [bundle size, load time]
+- Accessibility Risks: [compliance gaps]
+- Mitigation Strategies: [risk reduction plans]
+
+### Resource Requirements
+- Development Effort: [story points, timeline]
+- Design Resources: [UI/UX requirements]
+- Testing Resources: [QA requirements]
+- Browser Testing: [compatibility testing]
 ```
 
-## Checklist
+## Production Checklist
 
-- [ ] Requirements fully understood
-- [ ] Existing code explored
-- [ ] Solution designed
-- [ ] Edge cases identified
-- [ ] Test cases planned
-- [ ] Implementation plan documented
+### Requirements Analysis
+- [ ] Business requirements clearly defined
+- [ ] User stories and acceptance criteria documented
+- [ ] Accessibility requirements identified
+- [ ] Performance requirements specified
+- [ ] Success criteria and KPIs established
+
+### Technical Design
+- [ ] Component architecture planned (Atomic Design)
+- [ ] TypeScript interfaces designed
+- [ ] State management strategy selected
+- [ ] Performance optimization planned
+- [ ] Accessibility architecture designed
+
+### Production Readiness
+- [ ] Testing strategy comprehensive
+- [ ] Development workflow defined
+- [ ] Quality gates established
+- [ ] Documentation strategy planned
+- [ ] Deployment strategy designed
+
+### Quality Assurance
+- [ ] Code quality standards defined
+- [ ] Performance benchmarks established
+- [ ] Accessibility compliance planned
+- [ ] Security considerations addressed
+- [ ] Browser compatibility verified
 
 ## How to Invoke
 
 ```
-Analyze and plan [feature/fix description] using the frontend-analysis-plan skill
+Analyze and plan [feature/fix description] for production deployment using the frontend-analysis-plan skill
 ```
+
+## Related Skills
+
+- **Implementation**: Use `frontend-code` skill for production-grade development
+- **Testing**: Use `frontend-test` skill for comprehensive testing
+- **Review**: Use `frontend-review` skill for production readiness review
